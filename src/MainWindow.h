@@ -50,7 +50,7 @@ private:
 
     QDate _begin_date = {2020, 2, 17};
     QTimer *_timerp;
-    const int _time_interval = 1000 * 20;
+    const int _time_interval = 1000;
     int _curr_week;
     int _curr_weekday;
     QTime _curr_time;
@@ -80,6 +80,7 @@ private:
     void load_time_table();
 
     void set_current_course();
+    void highlight_course(int x, int y);
     void display_course_info(int num);
 };
 

@@ -99,6 +99,45 @@ void MainWindow::update_time() {
     ui->labelTime->setText(tr(oss.str().c_str()));
 }
 
+void MainWindow::on_tableWidgetTimetable_cellDoubleClicked(int row, int column)
+{
+    display_course_info((*_curr_table)[row][column]);
+    _timerp->start(_time_interval);
+}
+
+void MainWindow::on_action_reload_triggered()
+{
+    if (!_info_fn.isEmpty()) load_info_table();
+    if (!_timetable_fn.isEmpty()) load_time_table();
+}
+
+void MainWindow::on_action_date_triggered()
+{
+    DialogDate *dialogp = new DialogDate(this, _begin_date);
+
+    connect(dialogp, SIGNAL(to_save_date(QDate)),
+            this, SLOT(when_saving_date(QDate)));
+
+    dialogp->show();
+}
+
+void MainWindow::when_saving_date(QDate date) {
+    _begin_date = date;
+    update_time();
+
+    QMessageBox::information(this, tr("设置成功"), tr("学期开始日设置成功！"));
+}
+
+void MainWindow::on_action_welcome_triggered()
+{
+    QString temp = QInputDialog::getText(this, tr("设置欢迎语"), tr("欢迎语："), QLineEdit::Normal, _welcome);
+    if (!temp.isNull()) {
+        _welcome = temp;
+        ui->labelHello->setText(_welcome);
+        QMessageBox::information(this, tr("设置成功"), tr("欢迎语设置成功！"));
+    }
+}
+
 void MainWindow::load_table(const QString &filename, std::unique_ptr<QXlsx::Document> &ptr) {
     if (!QFile::exists(filename)) {
         std::ostringstream oss;
@@ -229,57 +268,21 @@ void MainWindow::load_time_table() {
 }
 
 void MainWindow::set_current_course() {
-    if (_curr_course.x() == -1) {
-        QColor default_color = {255, 255, 255};
-        for (int row = 0; row != ui->tableWidgetTimetable->rowCount(); ++row) {
-            for (int col = 0; col != ui->tableWidgetTimetable->columnCount(); ++col) {
-                ui->tableWidgetTimetable->item(row, col)->setBackground(QBrush(default_color));
-            }
+    highlight_course(_curr_course.x(), _curr_course.y());
+    if (_curr_course.x() >= 0) {
+        display_course_info((*_curr_table)[_curr_course.x()][_curr_course.y()]);
+    }
+}
+
+void MainWindow::highlight_course(int x, int y) {
+    QColor default_color = {255, 255, 255};
+    for (int row = 0; row != ui->tableWidgetTimetable->rowCount(); ++row) {
+        for (int col = 0; col != ui->tableWidgetTimetable->columnCount(); ++col) {
+            ui->tableWidgetTimetable->item(row, col)->setBackground(QBrush(default_color));
         }
-        return;
     }
-    ui->tableWidgetTimetable->item(_curr_course.x(), _curr_course.y())->setBackground(QBrush(_highlight));
-    _timerp->start(1000 * 20);
-    display_course_info((*_curr_table)[_curr_course.x()][_curr_course.y()]);
-}
-
-void MainWindow::on_tableWidgetTimetable_cellDoubleClicked(int row, int column)
-{
-    display_course_info((*_curr_table)[row][column]);
-    _timerp->start(_time_interval);
-}
-
-void MainWindow::on_action_reload_triggered()
-{
-    if (!_info_fn.isEmpty()) load_info_table();
-    if (!_timetable_fn.isEmpty()) load_time_table();
-}
-
-void MainWindow::on_action_date_triggered()
-{
-    DialogDate *dialogp = new DialogDate(this, _begin_date);
-
-    connect(dialogp, SIGNAL(to_save_date(QDate)),
-            this, SLOT(when_saving_date(QDate)));
-
-    dialogp->show();
-}
-
-void MainWindow::when_saving_date(QDate date) {
-    _begin_date = date;
-    update_time();
-
-    QMessageBox::information(this, tr("设置成功"), tr("学期开始日设置成功！"));
-}
-
-void MainWindow::on_action_welcome_triggered()
-{
-    QString temp = QInputDialog::getText(this, tr("设置欢迎语"), tr("欢迎语："), QLineEdit::Normal, _welcome);
-    if (!temp.isNull()) {
-        _welcome = temp;
-        ui->labelHello->setText(_welcome);
-        QMessageBox::information(this, tr("设置成功"), tr("欢迎语设置成功！"));
-    }
+    if (x < 0) return;
+    ui->tableWidgetTimetable->item(x, y)->setBackground(QBrush(_highlight));
 }
 
 void MainWindow::display_course_info(int num) {
