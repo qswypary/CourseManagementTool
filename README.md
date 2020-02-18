@@ -1,5 +1,6 @@
-课程管理工具 作者：qswypary
+#课程管理工具
+##作者：qswypary
 
 为抗击新冠病毒肺炎疫情，各大高校均延迟返校时间并开始网上教学活动。然而，很多学校所安排的网上教学活动并未有详细规定，导致学生人均手操数十个应用、数十个微信群QQ群混杂的课群，十分混乱。由此开发了该工具帮助管理大学生的课程。
 
-<a ref="https://pan.baidu.com/s/1Pzu-3ltFF4AzZ3GpQKc95w">下载地址</a> 提取码：19yo
+下载地址(https://pan.baidu.com/s/1Pzu-3ltFF4AzZ3GpQKc95w") 提取码：19yo
