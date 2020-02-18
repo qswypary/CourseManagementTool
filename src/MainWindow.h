@@ -75,12 +75,15 @@ private:
 
     QVector<QLabel *> _url_labelp;
 
+    void update_current_course();
+
     void load_table(const QString &filename, std::unique_ptr<QXlsx::Document> &ptr);
     void load_info_table();
     void load_time_table();
 
-    void set_current_course();
+    void show_current_course();
     void highlight_course(int x, int y);
+    void display_course_info(int x, int y);
     void display_course_info(int num);
 };
 

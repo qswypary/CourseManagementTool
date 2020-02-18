@@ -78,15 +78,8 @@ void MainWindow::update_time() {
 
     _curr_week = int(_begin_date.daysTo(curr.date()) / WEEKDAYS.size()) + 1;
 
-    int num = 0;
-    for ( ; num != _course_time.size(); ++num) {
-        if (_curr_time >= _course_time[num][0]
-                && _curr_time < _course_time[num][1])
-            break;
-    }
-    if (num == _course_time.size()) num = -1;
-    _curr_course = {num, _curr_weekday - 1};
-    set_current_course();
+    update_current_course();
+    highlight_course(_curr_course.x(), _curr_course.y());
 
     if (_curr_week % 2 == 1) _curr_table = &_odd_week_table;
     else _curr_table = &_even_week_table;
@@ -136,6 +129,17 @@ void MainWindow::on_action_welcome_triggered()
         ui->labelHello->setText(_welcome);
         QMessageBox::information(this, tr("设置成功"), tr("欢迎语设置成功！"));
     }
+}
+
+void MainWindow::update_current_course() {
+    int num = 0;
+    for ( ; num != _course_time.size(); ++num) {
+        if (_curr_time >= _course_time[num][0]
+                && _curr_time < _course_time[num][1])
+            break;
+    }
+    if (num == _course_time.size()) num = -1;
+    _curr_course = {num, _curr_weekday - 1};
 }
 
 void MainWindow::load_table(const QString &filename, std::unique_ptr<QXlsx::Document> &ptr) {
@@ -264,10 +268,11 @@ void MainWindow::load_time_table() {
         ui->tableWidgetTimetable->setRowHeight(index, height);
     }
 
-    update_time();
+    update_current_course();
+    show_current_course();
 }
 
-void MainWindow::set_current_course() {
+void MainWindow::show_current_course() {
     highlight_course(_curr_course.x(), _curr_course.y());
     if (_curr_course.x() >= 0) {
         display_course_info((*_curr_table)[_curr_course.x()][_curr_course.y()]);
@@ -283,6 +288,10 @@ void MainWindow::highlight_course(int x, int y) {
     }
     if (x < 0) return;
     ui->tableWidgetTimetable->item(x, y)->setBackground(QBrush(_highlight));
+}
+
+void MainWindow::display_course_info(int x, int y) {
+    display_course_info((*_curr_table)[x][y]);
 }
 
 void MainWindow::display_course_info(int num) {
