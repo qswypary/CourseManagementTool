@@ -335,6 +335,7 @@ void MainWindow::display_course_info(int num) {
 
     ui->tableWidgetInfo->setRowCount(row_count);
     ui->tableWidgetInfo->setColumnCount(1);
+    ui->tableWidgetInfo->setEditTriggers(QTableWidget::NoEditTriggers);
 
     int width = ui->tableWidgetInfo->width() - ui->tableWidgetInfo->verticalHeader()->width();
     ui->tableWidgetInfo->setColumnWidth(0, width);
