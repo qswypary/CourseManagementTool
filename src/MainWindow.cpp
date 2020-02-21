@@ -247,7 +247,6 @@ void MainWindow::load_time_table() {
         labels.append(item);
     }
     ui->tableWidgetTimetable->setHorizontalHeaderLabels(labels);
-    ui->tableWidgetTimetable->horizontalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 
     for (int i = 0; i != row_num; ++i) {
         for (int j = 0; j != week_cnt; ++j) {
@@ -258,15 +257,8 @@ void MainWindow::load_time_table() {
         }
     }
 
-    int width = ui->tableWidgetTimetable->width() / week_cnt;
-    int height = (ui->tableWidgetTimetable->height() - ui->tableWidgetTimetable->horizontalHeader()->height() - 10) / row_num;
-
-    for (int index = 0; index != week_cnt; ++index) {
-        ui->tableWidgetTimetable->setColumnWidth(index, width);
-    }
-    for (int index = 0; index != row_num; ++index) {
-        ui->tableWidgetTimetable->setRowHeight(index, height);
-    }
+    ui->tableWidgetTimetable->verticalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableWidgetTimetable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
     update_current_course();
     show_current_course();
@@ -337,12 +329,12 @@ void MainWindow::display_course_info(int num) {
     ui->tableWidgetInfo->setColumnCount(1);
     ui->tableWidgetInfo->setEditTriggers(QTableWidget::NoEditTriggers);
 
-    int width = ui->tableWidgetInfo->width() - ui->tableWidgetInfo->verticalHeader()->width();
-    ui->tableWidgetInfo->setColumnWidth(0, width);
-
     ui->tableWidgetInfo->setVerticalHeaderLabels(labels);
     for (int row = 0; row != content.size(); ++row) {
         ui->tableWidgetInfo->setItem(row, 0, new QTableWidgetItem(content[row]));
     }
+
     ui->tableWidgetInfo->resizeRowsToContents();
+    ui->tableWidgetInfo->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+    ui->tableWidgetInfo->verticalHeader()->setSectionResizeMode(QHeaderView::Fixed);
 }
